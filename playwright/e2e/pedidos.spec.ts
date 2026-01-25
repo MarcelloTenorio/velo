@@ -23,4 +23,5 @@ test('consulta de pedidos', async ({ page }) => {
 
   //Checkpoint: Verificar o status do pedido
   await expect(page.getByTestId('order-result-status')).toBeVisible()
+  await expect(page.getByTestId('order-result-status')).toContainText('APROVADO')
 })
