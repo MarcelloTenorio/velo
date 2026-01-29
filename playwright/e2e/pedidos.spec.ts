@@ -43,15 +43,18 @@ test('consulta de pedidos', async ({ page }) => {
   //Primeira forma (Com locator e Xpath)
   //await expect(page.locator('//p[text()="VLO-VA9DJ2"]/..//p')).toBeVisible({timeout: 30_000})
   //await expect(page.locator('//p[text()="VLO-VA9DJ2"]/..//p')).toContainText('VLO-VA9DJ2')
+  
   //Segunda forma (Com GetByText e 'nome no elemento')
   await expect(page.getByText('VLO-VA9DJ2')).toBeVisible({timeout: 30_000})  //<- Aqui o timeout vai tentar buscar até 30 segundos.
   await expect(page.getByText('VLO-VA9DJ2')).toContainText('VLO-VA9DJ2')
 
 
   //Checkpoint: Verificar o status do pedido
+  
   //Primeira forma (Com locator e Xpath)
   //await expect(page.locator('//div[text()="APROVADO"]')).toBeVisible()
   //await expect(page.locator('//div[text()="APROVADO"]')).toContainText('APROVADO')
+  
   //Segunda forma (Com GetByText e 'nome no elemento')
   await expect(page.getByText('APROVADO')).toBeVisible()
   await expect(page.getByText('APROVADO')).toContainText('APROVADO')
