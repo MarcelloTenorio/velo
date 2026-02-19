@@ -1,9 +1,7 @@
-  //Teste automatizado de consulta de pedidos, usando o "codegen" do playwright
-import { test, expect } from '@playwright/test'
+//Teste automatizado de consulta de pedidos, usando o "codegen" do playwright
+import { test, expect } from '../support/fixtures'
 import { generateOrderCode } from '../support/helper'
-import { Navbar } from '../support/components/Navbar'
-import { LandingPage } from '../support/pages/LandingPage'
-import { OrderLookupPage, OrderDetails } from '../support/pages/OrderLookupPages'
+import { OrderDetails } from '../support/actions/orderLookupActions'
 
 
 /// AAA - Arrange, Act, Assert
@@ -11,21 +9,14 @@ import { OrderLookupPage, OrderDetails } from '../support/pages/OrderLookupPages
 
 test.describe('Consulta de pedidos', () => {
 
-  let orderLookupPage: OrderLookupPage
-
   // test.beforeAll(async () =>{
   //   console.log(
   //     'beforeAll: roda uma vez antes de todos os testes.'
   //   )
   // })
 
-  test.beforeEach(async ({ page }) => {
-    //const orderLookupPage = new OrderLookupPage(page)
-    await new LandingPage(page).goto()
-    await new Navbar(page).orderLookupLink()
-
-    orderLookupPage = new OrderLookupPage(page)
-    orderLookupPage.validatePageLoaded()
+  test.beforeEach(async ({ app }) => {
+    await app.orderLookup.open()
   })
 
   // test.afterEach(async () => {
@@ -40,7 +31,7 @@ test.describe('Consulta de pedidos', () => {
   //   )
   // })
 
-  test('consulta de pedido aprovado', async ({ page }) => {
+  test('consulta de pedido aprovado', async ({ app, page }) => {
     //Test Data
     //const order = 'VLO-VA9DJ2'
     const order: OrderDetails = {
@@ -67,7 +58,7 @@ test.describe('Consulta de pedidos', () => {
     //Act - Clicar no botão de buscar pedido
     //await page.locator('//button[text()="Buscar Pedido"]').click()
       //await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-    await orderLookupPage.searchOrder(order.number)
+    await app.orderLookup.searchOrder(order.number)
 
 
   // -----------------------------------------------------------------------------------
@@ -88,7 +79,7 @@ test.describe('Consulta de pedidos', () => {
   //   .filter({ hasText: /^Pedido$/ })  // Usando uma expressão regular para buscar o texto 'Pedido' exatamente como está escrito (^ começa com, $ termina com)
   //   .locator('..')  //Sobe para o elemento pai do texto 'Pedido' (a div que agrupa ambos os elementos)
   // await expect(containerPedido).toContainText(order, { timeout: 10_000 })
-  await orderLookupPage.validateOrderDetails(order)
+  await app.orderLookup.validateOrderDetails(order)
 
     /* const statusBadge = page.getByRole('status').filter({hasText: order.status})
 
@@ -99,7 +90,7 @@ test.describe('Consulta de pedidos', () => {
     await expect(statusIcon).toHaveClass(/lucide-circle-check-big/) */
 
     // Validação do badge de status encapsulada no Page Object
-    await orderLookupPage.validateStatusBadge(order.status)
+    await app.orderLookup.validateStatusBadge(order.status)
 
   //await expect(page.getByText('VLO-VA9DJ2')).toBeVisible({timeout: 30_000})  //<- Aqui o timeout vai tentar buscar até 30 segundos.
   //await expect(page.getByText('VLO-VA9DJ2')).toContainText('VLO-VA9DJ2')
@@ -116,7 +107,7 @@ test.describe('Consulta de pedidos', () => {
   await expect(page.getByText('APROVADO')).toContainText('APROVADO')
   })
 
-  test('consulta de pedido reprovado', async ({ page }) => {
+  test('consulta de pedido reprovado', async ({ app, page }) => {
     //Test Data
     //const order = 'VLO-LH34RF'
     const order: OrderDetails = {
@@ -143,7 +134,7 @@ test.describe('Consulta de pedidos', () => {
     //Act - Clicar no botão de buscar pedido
     //await page.locator('//button[text()="Buscar Pedido"]').click()
       //await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-    await orderLookupPage.searchOrder(order.number)
+    await app.orderLookup.searchOrder(order.number)
 
 
   // -----------------------------------------------------------------------------------
@@ -166,7 +157,7 @@ test.describe('Consulta de pedidos', () => {
   // await expect(containerPedido).toContainText(order, { timeout: 10_000 })
   
 
-  await orderLookupPage.validateOrderDetails(order)
+  await app.orderLookup.validateOrderDetails(order)
 
     /* const statusBadge = page.getByRole('status').filter({hasText: order.status})
 
@@ -177,7 +168,7 @@ test.describe('Consulta de pedidos', () => {
     await expect(statusIcon).toHaveClass(/lucide-circle-x/) */
 
     // Validação do badge de status encapsulada no Page Object
-    await orderLookupPage.validateStatusBadge(order.status)
+    await app.orderLookup.validateStatusBadge(order.status)
 
   //await expect(page.getByText('VLO-VA9DJ2')).toBeVisible({timeout: 30_000})  //<- Aqui o timeout vai tentar buscar até 30 segundos.
   //await expect(page.getByText('VLO-VA9DJ2')).toContainText('VLO-VA9DJ2')
@@ -194,7 +185,7 @@ test.describe('Consulta de pedidos', () => {
   await expect(page.getByText('REPROVADO')).toContainText('REPROVADO')
   })
 
-  test('consulta de pedido em_analise', async ({ page }) => {
+  test('consulta de pedido em_analise', async ({ app, page }) => {
     //Test Data
     //const order = 'VLO-LH34RF'
     const order: OrderDetails = {
@@ -221,7 +212,7 @@ test.describe('Consulta de pedidos', () => {
     //Act - Clicar no botão de buscar pedido
     //await page.locator('//button[text()="Buscar Pedido"]').click()
       //await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-      await orderLookupPage.searchOrder(order.number)
+      await app.orderLookup.searchOrder(order.number)
   
     // -----------------------------------------------------------------------------------
     //Assert
@@ -243,7 +234,7 @@ test.describe('Consulta de pedidos', () => {
     // await expect(containerPedido).toContainText(order, { timeout: 10_000 })
     
   
-    await orderLookupPage.validateOrderDetails(order)
+    await app.orderLookup.validateOrderDetails(order)
   
     /* const statusBadge = page.getByRole('status').filter({hasText: order.status})
 
@@ -254,7 +245,7 @@ test.describe('Consulta de pedidos', () => {
       await expect(statusIcon).toHaveClass(/lucide-clock/)
     */
       // Validação do badge de status encapsulada no Page Object
-      await orderLookupPage.validateStatusBadge(order.status)
+      await app.orderLookup.validateStatusBadge(order.status)
 
     //await expect(page.getByText('VLO-VA9DJ2')).toBeVisible({timeout: 30_000})  //<- Aqui o timeout vai tentar buscar até 30 segundos.
     //await expect(page.getByText('VLO-VA9DJ2')).toContainText('VLO-VA9DJ2')
@@ -274,7 +265,7 @@ test.describe('Consulta de pedidos', () => {
   //--------------------------------------------------
   // Teste de consulta de pedido não encontrado
   //--------------------------------------------------  -- Nesse teste, vamos verificar se a mensagem de pedido não encontrado é exibida quando o pedido não é encontrado
-  test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
+  test('deve exibir mensagem quando o pedido não é encontrado', async ({ app, page }) => {
 
     const order = generateOrderCode()
 
@@ -285,7 +276,7 @@ test.describe('Consulta de pedidos', () => {
 
     //Act - Clicar no botão de buscar pedido
         //await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-      await orderLookupPage.searchOrder(order)
+      await app.orderLookup.searchOrder(order)
     // -----------------------------------------------------------------------------------
     //Assert
     //Checkpoint: Verificar o resultado da busca de pedidos
@@ -303,15 +294,15 @@ test.describe('Consulta de pedidos', () => {
     // await expect(message).toBeVisible()
 
     //Snapshot: Verificar a estrutura da página de consulta de pedidos
-    await orderLookupPage.validateOrderNotFound()
+    await app.orderLookup.validateOrderNotFound()
   })
 
-  test('deve exibir mensagem quando o pedido em qualquer formato não é encontrado', async ({ page }) => {
+  test('deve exibir mensagem quando o pedido em qualquer formato não é encontrado', async ({ app }) => {
 
     // -----------------------------------------------------------------------------------
     //Act
     // Preencher o campo de busca de pedidos e Clicar no botão de buscar pedido
-    await orderLookupPage.searchOrder('ABC123')
-    await orderLookupPage.validateOrderNotFound()
+    await app.orderLookup.searchOrder('ABC123')
+    await app.orderLookup.validateOrderNotFound()
   })
 })
