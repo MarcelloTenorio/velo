@@ -24,6 +24,34 @@ export function createConfiguratorActions(page: Page) {
       const carImage = page.locator('img[alt^="Velô Sprint"]');
       await expect(carImage).toHaveAttribute('src', src);
     },
+
+    // Ações de opcionais <<----------------------------------------------
+
+    async expectOptionalToBeVisible(name: string) {
+      const checkbox = page.getByRole('checkbox', { name });
+      await expect(checkbox).toBeVisible();
+    },
+
+    async expectOptionalNotToBeChecked(name: string) {
+      const checkbox = page.getByRole('checkbox', { name });
+      await expect(checkbox).not.toBeChecked();
+    },
+
+    async toggleOptional(name: string) {
+      await page.getByRole('checkbox', { name }).click();
+    },
+
+    
+    async goToCheckout() {
+      await page.getByRole('button', { name: 'Monte o Seu' }).click();
+    },
+
+    async expectCheckoutUrl() {
+      await expect(page).toHaveURL(/\/order/);
+    },
+    async expectSummaryTotalPriceToBe(value: string) {
+      await expect(page.getByTestId('summary-total-price')).toContainText(value);
+    },
   };
 }
 
