@@ -9,32 +9,26 @@ test.describe('Checkout', () => {
 
 
     test.describe('Validações de campos obrigatórios', () => {
-        test('deve validar obrigatoriedade de todos os campos em branco', async ({ page, app }) => {
+        let alerts: any
+        test.beforeEach(async ({ app }) => {
+            alerts = app.checkout.elements.alerts
+        })
 
-            const nameAlert = page.locator('//label[text()="Nome"]/..//p')
-            const surnameAlert = page.locator('//label[text()="Sobrenome"]/..//p')
-            const emailAlert = page.locator('//label[text()="Email"]/..//p')
-            const phoneAlert = page.locator('//label[text()="Telefone"]/..//p')
-            const cpfAlert = page.locator('//label[text()="CPF"]/..//p')
-            const storeAlert = page.locator('//label[text()="Loja para Retirada"]/..//p')
-            const termsAlert = page.locator('//label[@for="terms"]/following-sibling::p')
-
+        test('deve validar obrigatoriedade de todos os campos em branco', async ({ app }) => {
             // Act
             await app.checkout.submit()
 
             // Assert
-            await expect(nameAlert).toHaveText('Nome deve ter pelo menos 2 caracteres')
-            await expect(surnameAlert).toHaveText('Sobrenome deve ter pelo menos 2 caracteres')
-            await expect(emailAlert).toHaveText('Email inválido')
-            await expect(phoneAlert).toHaveText('Telefone inválido')
-            await expect(cpfAlert).toHaveText('CPF inválido')
-            await expect(storeAlert).toHaveText('Selecione uma loja')
-            await expect(termsAlert).toHaveText('Aceite os termos')
+            await expect(alerts.name).toHaveText('Nome deve ter pelo menos 2 caracteres')
+            await expect(alerts.lastname).toHaveText('Sobrenome deve ter pelo menos 2 caracteres')
+            await expect(alerts.email).toHaveText('Email inválido')
+            await expect(alerts.phone).toHaveText('Telefone inválido')
+            await expect(alerts.document).toHaveText('CPF inválido')
+            await expect(alerts.store).toHaveText('Selecione uma loja')
+            await expect(alerts.terms).toHaveText('Aceite os termos')
         })
 
-        test('deve validar limite mínimo de caracteres para Nome e Sobrenome', async ({ page, app }) => {
-            const nameAlert = page.locator('//label[text()="Nome"]/..//p')
-            const surnameAlert = page.locator('//label[text()="Sobrenome"]/..//p')
+        test('deve validar limite mínimo de caracteres para Nome e Sobrenome', async ({ app }) => {
 
             const customer = {
                 name: 'A',
@@ -53,12 +47,11 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(nameAlert).toHaveText('Nome deve ter pelo menos 2 caracteres')
-            await expect(surnameAlert).toHaveText('Sobrenome deve ter pelo menos 2 caracteres')
+            await expect(alerts.name).toHaveText('Nome deve ter pelo menos 2 caracteres')
+            await expect(alerts.lastname).toHaveText('Sobrenome deve ter pelo menos 2 caracteres')
         })
 
-        test('deve exibir erro para e-mail com formato inválido', async ({ page, app }) => {
-            const emailAlert = page.locator('//label[text()="Email"]/..//p')
+        test('deve exibir erro para e-mail com formato inválido', async ({ app }) => {
 
             const customer = {
                 name: 'João',
@@ -77,17 +70,16 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(emailAlert).toHaveText('Email inválido')
+            await expect(alerts.email).toHaveText('Email inválido')
         })
 
-        test('deve exibir erro para CPF inválido', async ({ page, app }) => {
-            const cpfAlert = page.locator('//label[text()="CPF"]/..//p')
+        test('deve exibir erro para CPF inválido', async ({ app }) => {
 
             const customer = {
                 name: 'João',
                 lastname: 'Silva',
-                email: 'joao.silva@email',
-                document: '',
+                email: 'joao.silva@email.com',
+                document: '123',
                 phone: '(11) 99999-9999'
             }
 
@@ -96,12 +88,14 @@ test.describe('Checkout', () => {
             await app.checkout.selectStore('Velô Paulista')
             await app.checkout.acceptTerms()
 
+            // Act - 👇O teste de verificação de CPF estava falhando por faltar essa linha👇
+            await app.checkout.submit()
+
             // Assert
-            await expect(cpfAlert).toHaveText('CPF inválido')
+            await expect(alerts.document).toHaveText('CPF inválido')
         })
 
-        test('deve exigir o aceite dos termos ao finalizar com dados válidos', async ({ page, app }) => {
-            const termsAlert = page.locator('//label[@for="terms"]/following-sibling::p')
+        test('deve exigir o aceite dos termos ao finalizar com dados válidos', async ({ app }) => {
 
             const customer = {
                 name: 'João',
@@ -121,7 +115,7 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(termsAlert).toHaveText('Aceite os termos')
+            await expect(alerts.terms).toHaveText('Aceite os termos')
         })
     })
 })
