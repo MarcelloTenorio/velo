@@ -42,6 +42,24 @@ export function createCheckoutActions(page: Page) {
       await page.getByTestId('checkout-document').fill(data.document)
     },
 
+    async mockCreditAnalysis(score: number, status: string = 'Done') {
+      await page.route('**/functions/v1/credit-analysis', async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status,
+            score
+          }),
+        })
+      })
+    },
+
+    async navigateToCheckout() {
+      await page.goto('/')
+      await page.getByRole('link', { name: /Configure Agora/i }).click()
+    },
+
     async selectStore(storeName: string) {
       await page.getByTestId('checkout-store').click()
       await page.getByRole('option', { name: storeName }).click()
@@ -51,6 +69,10 @@ export function createCheckoutActions(page: Page) {
       await page.getByRole('button', { name: new RegExp(method, 'i') }).click()
     },
 
+    async fillDownPayment(value: string) {
+      await page.getByTestId('input-entry-value').fill(value)
+    },
+
     async acceptTerms() {
       await terms.check()
     },
@@ -58,5 +80,20 @@ export function createCheckoutActions(page: Page) {
     async submit() {
       await page.getByRole('button', { name: 'Confirmar Pedido' }).click()
     },
+
+    async expectOrderApproved() {
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: /Pedido Aprovado/i })).toBeVisible()
+    },
+
+    async expectOrderUnderAnalysis() {
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: 'Pedido em Análise' })).toBeVisible()
+    },
+
+    async expectOrderRejected() {
+      await expect(page).toHaveURL(/\/success/)
+      await expect(page.getByRole('heading', { name: /Pedido Reprovado/i })).toBeVisible()
+    }
   }
 }
