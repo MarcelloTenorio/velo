@@ -55,7 +55,7 @@ export function createCheckoutActions(page: Page) {
       })
     },
 
-    async navigateToCheckout() {
+    async navigateToConfigurator() {
       await page.goto('/')
       await page.getByRole('link', { name: /Configure Agora/i }).click()
     },

@@ -135,7 +135,7 @@ test.describe('Checkout', () => {
             await deleteOrderByDocument(customer.document)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice("R$ 40.000,00")
             await app.configurator.finishConfigurator()
@@ -172,7 +172,7 @@ test.describe('Checkout', () => {
             await app.checkout.mockCreditAnalysis(710)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -208,7 +208,7 @@ test.describe('Checkout', () => {
             await app.checkout.mockCreditAnalysis(600)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -244,7 +244,7 @@ test.describe('Checkout', () => {
             await app.checkout.mockCreditAnalysis(500)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -281,7 +281,7 @@ test.describe('Checkout', () => {
             await app.checkout.mockCreditAnalysis(500)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -318,7 +318,7 @@ test.describe('Checkout', () => {
             await app.checkout.mockCreditAnalysis(450)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -355,7 +355,7 @@ test.describe('Checkout', () => {
             await app.checkout.mockCreditAnalysis(450)
 
             // Arrange
-            await app.checkout.navigateToCheckout()
+            await app.checkout.navigateToConfigurator()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
